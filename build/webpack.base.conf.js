@@ -34,15 +34,33 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: vueLoaderConfig
+        test: /\.node$/,
+        loader: "node-loader",
+        options: {
+          // map sourceMap
+          name(resourcePath, resourceQuery) {
+            if (process.env.NODE_ENV === "development") {
+              return "[path][name].[ext]";
+            }
+
+            return "[contenthash].[ext]";
+          },
+        },
       },
       {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: vueLoaderConfig,
+        // include: [
+        //   resolve('src'), resolve('test'),
+        //   // resolve('node_modules/@qii404/vue-easy-tree/src/')
+        // ],
       },
+      // {
+      //   test: /\.js$/,
+      //   loader: 'babel-loader',
+      //   include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client'), resolve('node_modules/@qii404/vue-easy-tree/src/')]
+      // },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
@@ -69,6 +87,7 @@ module.exports = {
           publicPath: '../../'
         }
       },
+
     ]
   },
   node: {

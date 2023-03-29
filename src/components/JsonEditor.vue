@@ -7,14 +7,14 @@
     </div>
 
     <!-- monaco editor div -->
-    <div id="monaco-editor-con" ref="editor"></div>
+    <div class="monaco-editor-con" ref="editor"></div>
   </div>
 </template>
 
 <script type="text/javascript">
 // import * as monaco from 'monaco-editor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-const JSONbig = require('json-bigint')({useNativeBigInt: false});
+const JSONbig = require('@qii404/json-bigint')({useNativeBigInt: false});
 
 export default {
   data() {
@@ -59,6 +59,17 @@ export default {
 
       return Buffer.from(JSONbig.stringify(JSONbig.parse(content), null, 0));
     },
+    getRawContent(removeJsonSpace = false) {
+      let content = this.monacoEditor.getValue();
+
+      if (removeJsonSpace) {
+        if (this.$util.isJson(content)) {
+          content = JSONbig.stringify(JSONbig.parse(content), null, 0);
+        }
+      }
+
+      return content;
+    },
     toggleCollapse() {
       this.collapseText == 'expand_all' ? this.monacoEditor.trigger('fold', 'editor.unfoldAll') :
                                           this.monacoEditor.trigger('fold', 'editor.foldAll');
@@ -81,11 +92,11 @@ export default {
 
   mounted() {
     this.monacoEditor = monaco.editor.create(
-      this.$refs.editor, 
+      this.$refs.editor,
       {
         value: this.newContentStr,
         theme: 'vs-dark',
-        language: 'json', 
+        language: 'json',
         links: false,
         readOnly: this.readOnly,
         cursorStyle: this.readOnly ? 'underline-thin' : 'line',
@@ -137,9 +148,9 @@ export default {
 </script>
 
 <style type="text/css">
-  .text-formated-container #monaco-editor-con {
+  .text-formated-container .monaco-editor-con {
     min-height: 150px;
-    max-height: 100vh;
+    height: calc(100vh - 730px);
     clear: both;
     overflow: hidden;
     background: none;
@@ -155,55 +166,68 @@ export default {
     border-radius: 4px;
   }
   .dark-mode .text-formated-container .monaco-editor .scrollbar {
-    background: #475156;
+    background: #425057;
   }
   .text-formated-container .monaco-editor .scrollbar:hover {
     background: #e0e0dd;
   }
   .dark-mode .text-formated-container .monaco-editor .scrollbar:hover {
-    background: #565656;
+    background: #495961;
   }
 
-  .text-formated-container #monaco-editor-con .monaco-editor .slider {
+  .text-formated-container .monaco-editor-con .monaco-editor .slider {
     border-radius: 4px;
     background: #c1c1c1;
   }
-  .dark-mode .text-formated-container #monaco-editor-con .monaco-editor .slider {
-    background: #5d676d;
+  .dark-mode .text-formated-container .monaco-editor-con .monaco-editor .slider {
+    background: #5a6f7a;
   }
-  .text-formated-container #monaco-editor-con .monaco-editor .slider:hover {
-    background: #7d7d7d;
+  .text-formated-container .monaco-editor-con .monaco-editor .slider:hover {
+    background: #7f7f7f;
+  }
+  .dark-mode .text-formated-container .monaco-editor-con .monaco-editor .slider:hover {
+    background: #6a838f;
   }
 
   /*remove background color*/
   .text-formated-container .monaco-editor .margin {
     background-color: inherit;
   }
-  #monaco-editor-con .monaco-editor, #monaco-editor-con .monaco-editor-background, #monaco-editor-con .monaco-editor .inputarea.ime-input {
+  .text-formated-container .monaco-editor-con .monaco-editor, 
+  .text-formated-container .monaco-editor-con .monaco-editor-background, 
+  .text-formated-container .monaco-editor-con .monaco-editor .inputarea.ime-input {
     background-color: inherit;
   }
 
   /*json key color*/
-  #monaco-editor-con .mtk4 {
+  .text-formated-container .monaco-editor-con .mtk4 {
     color: #111111;
   }
-  .dark-mode #monaco-editor-con .mtk4 {
+  .dark-mode .text-formated-container .monaco-editor-con .mtk4 {
     color: #ebebec;
   }
   /*json val string color*/
-  #monaco-editor-con .mtk5 {
+  .text-formated-container .monaco-editor-con .mtk5 {
     color: #42b983;
   }
   /*json val number color*/
-  #monaco-editor-con .mtk6 {
+  .text-formated-container .monaco-editor-con .mtk6 {
     color: #fc1e70;
   }
   /*json bracket color*/
-  #monaco-editor-con .mtk9 {
+  .text-formated-container .monaco-editor-con .mtk9 {
     color: #111111;
   }
   /*json bracket color*/
-  .dark-mode #monaco-editor-con .mtk9 {
+  .dark-mode .text-formated-container .monaco-editor-con .mtk9 {
     color: #b6b6b9;
+  }
+
+  /* common string in json editor*/
+  .text-formated-container .monaco-editor-con .mtk1 {
+    color: #606266;
+  }
+  .dark-mode .text-formated-container .monaco-editor-con .mtk1 {
+    color: #f3f3f4;
   }
 </style>

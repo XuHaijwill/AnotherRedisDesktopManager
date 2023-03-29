@@ -1,35 +1,39 @@
 <template>
-  <JsonEditor ref='editor' :content='newContent'></JsonEditor>
+  <JsonEditor ref='editor' :content='newContent' :readOnly='false'></JsonEditor>
 </template>
 
 <script type="text/javascript">
 import JsonEditor from '@/components/JsonEditor';
-const decompress = require('brotli/decompress');
+const zlib = require('zlib');
 
 export default {
   components: {JsonEditor},
   props: ['content'],
   computed: {
     newContent() {
-      let decompressed = this.brotliStr;
+      let formatStr = this.formatStr;
 
-      if (typeof decompressed === 'string') {
-        if (this.$util.isJson(decompressed)) {
-          return JSON.parse(decompressed);
+      if (typeof formatStr === 'string') {
+        if (this.$util.isJson(formatStr)) {
+          return JSON.parse(formatStr);
         }
 
-        return decompressed;
+        return formatStr;
       }
 
-      return 'Brotli Parse Failed!';
+      return 'Zlib Brotli Parse Failed!';
     },
-    brotliStr() {
-      return this.$util.brotliToString(this.content);
+    formatStr() {
+      return this.$util.zippedToString(this.content, 'brotli');
     },
   },
   methods: {
+    getContent() {
+      const content = this.$refs.editor.getRawContent(true);
+      return zlib.brotliCompressSync(content);
+    },
     copyContent() {
-      return this.brotliStr;
+      return this.formatStr;
     }
   },
 }
