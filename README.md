@@ -115,7 +115,7 @@ npm install
 # 
 # npm config set registry http://mirrors.cloud.tencent.com/npm/
 # npm config get registry
-# Follow the prompts to install
+# Follow the prompts to install,cnpm more quick
 # cnpm install --save vue-virtual-scroller
 
 # serve with hot reload at localhost:9988
